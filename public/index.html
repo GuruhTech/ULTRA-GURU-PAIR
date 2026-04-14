@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-  <title>ULTRA GURU • Neural Interface</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ULTRA GURU • Neural Interface v2.0</title>
   <meta name="theme-color" content="#ff2e63">
 
   <script src="https://cdn.tailwindcss.com"></script>
@@ -12,203 +12,446 @@
 
   <style>
     :root {
-      --bg-dark: #050508;
+      --bg-dark: #030305;
       --accent-primary: #ff2e63; /* Electric Crimson */
       --accent-secondary: #08d9d6; /* Cyber Cyan */
-      --glass: rgba(255, 255, 255, 0.03);
+      --glass: rgba(255, 255, 255, 0.015);
+      --font-outfit: 'Outfit', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
     }
 
     body {
-      font-family: 'Outfit', sans-serif;
+      font-family: var(--font-outfit);
       background-color: var(--bg-dark);
       color: #eaeaea;
       overflow-x: hidden;
+      cursor: crosshair;
     }
 
-    .mono { font-family: 'JetBrains Mono', monospace; }
+    .mono { font-family: var(--font-mono); }
 
-    /* Animated Gradient Background */
-    .bg-glow {
+    /* --- BACKGROUND DEPTH --- */
+    .bg-layers {
       position: fixed;
       top: 0; left: 0; width: 100%; height: 100%;
-      background: radial-gradient(circle at 50% -20%, #1a1a2e 0%, transparent 50%),
-                  radial-gradient(circle at 0% 100%, #110011 0%, transparent 40%);
+      z-index: -1;
+      background: 
+        radial-gradient(circle at 50% -20%, #1a1a2e 0%, transparent 50%),
+        radial-gradient(circle at 10% 110%, #110011 0%, transparent 40%);
+    }
+
+    /* Animated Grid */
+    .bg-grid {
+      position: absolute;
+      width: 200%; height: 200%;
+      top: -50%; left: -50%;
+      background-image: 
+        linear-gradient(rgba(255, 46, 99, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 46, 99, 0.03) 1px, transparent 1px);
+      background-size: 60px 60px;
+      transform: perspective(500px) rotateX(60deg);
+      animation: grid-drift 60s linear infinite;
+    }
+
+    @keyframes grid-drift {
+      0% { background-position: 0 0; }
+      100% { background-position: 0 100%; }
+    }
+
+    /* --- NAVIGATION --- */
+    .nav-blur {
+      background: rgba(3, 3, 5, 0.85);
+      backdrop-filter: blur(20px) saturate(180%);
+      border-bottom: 1px solid rgba(255, 46, 99, 0.08);
+    }
+
+    .nav-item {
+      position: relative;
+      transition: color 0.3s;
+    }
+    .nav-item::after {
+      content: '';
+      position: absolute;
+      bottom: -4px; left: 0; width: 0; height: 1px;
+      background: var(--accent-primary);
+      transition: width 0.3s;
+    }
+    .nav-item:hover { color: #fff; }
+    .nav-item:hover::after { width: 100%; }
+
+    /* --- HERO --- */
+    .hero-title {
+      font-weight: 800;
+      letter-spacing: -0.07em;
+      line-height: 0.85;
+      text-transform: uppercase;
+      background: linear-gradient(135deg, #fff 40%, rgba(255,255,255,0.1) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      filter: drop-shadow(0 0 15px rgba(255,255,255,0.1));
+    }
+
+    /* Advanced Cyber Button */
+    .btn-cyber-v2 {
+      position: relative;
+      padding: 18px 40px;
+      background: transparent;
+      color: #fff;
+      font-weight: 700;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      clip-path: polygon(15px 0%, 100% 0%, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0% 100%, 0% 15px);
+      transition: all 0.3s cubic-bezier(0.2, 1, 0.3, 1);
+      overflow: hidden;
+      z-index: 1;
+    }
+
+    .btn-cyber-v2::before {
+      content: '';
+      position: absolute;
+      top: 0; left: -100%;
+      width: 100%; height: 100%;
+      background: #fff;
+      transition: left 0.4s cubic-bezier(0.2, 1, 0.3, 1);
       z-index: -1;
     }
 
-    .nav-blur {
-      background: rgba(5, 5, 8, 0.8);
-      backdrop-filter: blur(20px);
-      border-bottom: 1px solid rgba(255, 46, 99, 0.1);
-    }
-
-    .hero-title {
-      font-weight: 800;
-      letter-spacing: -0.05em;
-      line-height: 0.9;
-      background: linear-gradient(to bottom right, #fff 30%, rgba(255,255,255,0.4));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    .btn-cyber {
-      position: relative;
-      padding: 16px 36px;
-      background: #fff;
+    .btn-cyber-v2:hover {
       color: #000;
-      font-weight: 700;
-      clip-path: polygon(10% 0, 100% 0, 100% 70%, 90% 100%, 0 100%, 0 30%);
-      transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+      border-color: #fff;
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
     }
 
-    .btn-cyber:hover {
+    .btn-cyber-v2:hover::before {
+      left: 0;
+    }
+
+    .btn-cyber-v2 .btn-glitch {
+      display: none;
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
       background: var(--accent-primary);
-      color: #fff;
-      transform: scale(1.05);
-      box-shadow: 0 0 30px rgba(255, 46, 99, 0.4);
+      opacity: 0.5;
+      z-index: -2;
+    }
+    .btn-cyber-v2:hover .btn-glitch {
+      display: block;
+      animation: glitch-anim 0.2s steps(2) infinite;
     }
 
+    /* QR_SCAN button v2 */
+    .btn-outline-cyber {
+      position: relative;
+      padding: 18px 30px;
+      border: 1px solid rgba(8, 217, 214, 0.1);
+      color: rgba(255, 255, 255, 0.6);
+      transition: all 0.3s;
+    }
+    .btn-outline-cyber::after {
+      content: ''; position: absolute;
+      top: -1px; left: -1px; width: 10px; height: 10px;
+      border-top: 1px solid var(--accent-secondary); border-left: 1px solid var(--accent-secondary);
+      transition: all 0.3s;
+    }
+    .btn-outline-cyber:hover {
+      background: rgba(8, 217, 214, 0.03);
+      border-color: rgba(8, 217, 214, 0.4);
+      color: var(--accent-secondary);
+      box-shadow: 0 0 15px rgba(8, 217, 214, 0.1);
+    }
+    .btn-outline-cyber:hover::after {
+      width: 100%; height: 100%;
+    }
+
+    /* --- CARDS --- */
     .glass-card {
       background: var(--glass);
-      border: 1px solid rgba(255, 255, 255, 0.05);
-      backdrop-filter: blur(10px);
-      transition: all 0.3s ease;
+      border: 1px solid rgba(255, 255, 255, 0.03);
+      backdrop-filter: blur(15px);
+      transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+      position: relative;
+    }
+    
+    .glass-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255, 46, 99, 0.06) 0%, transparent 60%);
+      opacity: 0;
+      transition: opacity 0.3s;
+      pointer-events: none;
     }
 
     .glass-card:hover {
-      background: rgba(255, 46, 99, 0.02);
-      border-color: rgba(255, 46, 99, 0.3);
+      border-color: rgba(255, 46, 99, 0.15);
       transform: translateY(-5px);
+      box-shadow: 0 15px 30px rgba(0,0,0,0.3), 0 0 1px rgba(255, 46, 99, 0.1);
+    }
+    .glass-card:hover::before {
+      opacity: 1;
     }
 
+    /* Feature Card specific corners */
+    .feature-card {
+      clip-path: polygon(0 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%);
+    }
+
+    /* Corner accents */
+    .corner-acc {
+      position: absolute; width: 10px; height: 10px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      transition: all 0.3s;
+    }
+    .feature-card:hover .corner-acc {
+      border-color: var(--card-accent, var(--accent-primary));
+    }
+    .corner-acc.tl { top: 10px; left: 10px; border-right: 0; border-bottom: 0; }
+    .corner-acc.br { bottom: 30px; right: 10px; border-left: 0; border-top: 0; }
+
+
+    /* --- VISUAL ELEMENTS --- */
     .scanline {
-      width: 100%;
-      height: 2px;
-      background: rgba(255, 46, 99, 0.1);
-      position: absolute;
-      animation: scan 4s linear infinite;
+      width: 100%; height: 100%;
+      background: linear-gradient(to bottom, transparent 50%, rgba(255, 46, 99, 0.02) 51%, transparent 51%);
+      background-size: 100% 4px;
+      position: absolute; top: 0; left: 0;
+      pointer-events: none;
+      animation: scanlines 0.2s linear infinite;
+    }
+    
+    @keyframes scanlines {
+      0% { background-position: 0 0; }
+      100% { background-position: 0 4px; }
     }
 
-    @keyframes scan {
-      0% { top: 0; }
-      100% { top: 100%; }
+    .console-loader {
+      display: inline-block;
+      width: 8px; height: 15px;
+      background: var(--accent-primary);
+      animation: blink 1s steps(2) infinite;
+      vertical-align: middle;
+      margin-left: 2px;
     }
 
-    .input-cyber {
-      background: rgba(255, 255, 255, 0.02);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      color: #fff;
-      transition: all 0.3s ease;
-    }
-    .input-cyber:focus {
-      border-color: var(--accent-secondary);
-      box-shadow: 0 0 15px rgba(8, 217, 214, 0.2);
-      outline: none;
+    @keyframes blink { 0% { opacity: 0; } }
+    @keyframes glitch-anim {
+      0% { transform: translate(2px, 1px); }
+      50% { transform: translate(-2px, -1px); }
+      100% { transform: translate(1px, -2px); }
     }
   </style>
 </head>
 <body>
-  <div class="bg-glow"></div>
+  
+  <div class="bg-layers">
+    <div class="bg-grid"></div>
+  </div>
 
   <nav class="nav-blur fixed top-0 w-full z-50">
-    <div class="max-w-7xl mx-auto px-6 py-5 flex items-center justify-between">
-      <div class="flex items-center gap-4">
-        <div class="w-10 h-10 border-2 border-[#ff2e63] rotate-45 flex items-center justify-center">
-          <span class="rotate-[-45deg] font-black text-white">U</span>
+    <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+      <div class="flex items-center gap-3 cursor-pointer group">
+        <div class="w-9 h-9 border border-[#ff2e63]/40 rotate-45 flex items-center justify-center relative overflow-hidden transition-transform group-hover:rotate-[135deg]">
+          <span class="rotate-[-45deg] font-extrabold text-white group-hover:rotate-[-135deg] transition-transform">U</span>
+          <div class="absolute inset-0 bg-[#ff2e63] opacity-0 group-hover:opacity-10 transition-opacity"></div>
         </div>
-        <span class="text-xl font-bold tracking-tighter">ULTRA<span class="text-[#ff2e63]">GURU</span></span>
+        <span class="text-xl font-bold tracking-tighter mono">ULTRA<span class="text-[#ff2e63]">GURU</span> <span class="text-xs opacity-40">NEXUS</span></span>
       </div>
       
-      <div class="hidden md:flex gap-10 text-xs font-semibold uppercase tracking-widest text-gray-400">
-        <a href="#" class="hover:text-[#ff2e63] transition-colors">Interface</a>
-        <a href="#" class="hover:text-[#ff2e63] transition-colors">Network</a>
-        <a href="#" class="hover:text-[#ff2e63] transition-colors">Nodes</a>
+      <div class="hidden md:flex gap-10 text-[11px] font-semibold uppercase tracking-[0.2em] text-gray-500 mono">
+        <a href="#" class="nav-item">Interface</a>
+        <a href="#" class="nav-item">Network</a>
+        <a href="#" class="nav-item">Nodes</a>
+        <a href="#" class="nav-item text-[#08d9d6]">Quantum_Lnk</a>
       </div>
 
-      <a href="/pair" class="mono text-xs border border-white/10 px-4 py-2 hover:bg-white hover:text-black transition-all">
-        SYS_CONNECT: 01
-      </a>
+      <div class="flex items-center gap-2">
+        <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse mr-2"></div>
+        <a href="/pair" class="mono text-xs border border-white/10 px-5 py-2 hover:bg-white hover:text-black transition-all">
+          SYS_STATUS: <span class="text-green-400">ONLINE</span>
+        </a>
+      </div>
     </div>
   </nav>
 
-  <main class="relative pt-40 pb-20 px-6">
-    <div class="max-w-7xl mx-auto grid lg:grid-cols-2 gap-12 items-center">
-      <div>
-        <div class="inline-block mono text-[10px] bg-[#ff2e63]/10 text-[#ff2e63] px-3 py-1 mb-8 border border-[#ff2e63]/20">
-          STABLE_BUILD_V2.0.6
+  <main class="relative pt-48 pb-20 px-6 min-h-screen flex items-center">
+    <div class="max-w-7xl mx-auto grid lg:grid-cols-12 gap-12 items-center w-full">
+      
+      <div class="lg:col-span-7 relative">
+        <div class="absolute -left-10 top-0 text-[20rem] font-black opacity-[0.015] select-none text-[#ff2e63] leading-none">U</div>
+        
+        <div class="inline-flex items-center mono text-[10px] bg-[#ff2e63]/8 text-[#ff2e63] px-4 py-1.5 mb-8 border border-[#ff2e63]/15">
+          <i class="fas fa-microchip mr-2 text-xs"></i> CORE_BUILD_V3.1 // SECURED
         </div>
-        <h1 class="hero-title text-8xl md:text-9xl mb-8">
-          PURE<br>LOGIC.
+        
+        <h1 class="hero-title text-8xl md:text-[11rem] mb-10 relative z-10">
+          LOGIC<br>STREAM.
         </h1>
-        <p class="text-lg text-gray-500 max-w-md leading-relaxed mb-10">
-          The next evolution of session management. Secure, ephemeral, and devastatingly fast. Choose your pairing protocol.
+        
+        <p class="text-xl text-gray-500 max-w-lg leading-relaxed mb-12 relative z-10 border-l-2 border-white/5 pl-6">
+          Initialize next-gen session bridging. Ephemeral, Quantum-resistant tunneling. Pick your access protocol below.
         </p>
         
-        <div class="flex flex-wrap gap-6">
-          <a href="/pair" class="btn-cyber">GENERATE_PAIR</a>
-          <a href="/qr" class="flex items-center gap-3 px-8 py-4 border border-white/10 hover:border-[#08d9d6] transition-all group">
-            <i class="fas fa-qrcode text-[#08d9d6]"></i>
-            <span class="mono text-sm group-hover:text-[#08d9d6]">QR_SCAN</span>
+        <div class="flex flex-wrap gap-8 items-center relative z-10">
+          <a href="/pair" class="btn-cyber-v2 group">
+            <span class="relative z-10">GENERATE_NEXUS_PAIR</span>
+            <div class="btn-glitch"></div>
+          </a>
+          <a href="/qr" class="btn-outline-cyber mono text-sm flex items-center gap-3">
+            <i class="fas fa-qrcode text-lg"></i>
+            <span>OPTIC_SYNC</span>
           </a>
         </div>
       </div>
 
-      <div class="relative hidden lg:block">
-        <div class="glass-card p-12 rounded-sm relative overflow-hidden">
+      <div class="lg:col-span-5 relative hidden lg:block">
+        <div class="absolute -top-16 -right-16 w-32 h-32 border border-[#08d9d6]/10 rotate-12 animate-pulse"></div>
+        <div class="absolute -bottom-10 left-10 w-20 h-20 bg-[#ff2e63]/5 blur-3xl"></div>
+
+        <div class="glass-card p-10 rounded-xl relative overflow-hidden border-white/5 shadow-2xl">
           <div class="scanline"></div>
-          <pre class="mono text-[10px] text-[#ff2e63]/60 leading-tight">
-> INITIALIZING GURU_TECH CORE...
-> ESTABLISHING SOCKET.IO...
-> STATUS: ENCRYPTED
-> HANDSHAKE: SUCCESS
-> READY_FOR_SESSION...
-> AWAITING_INPUT_IDENTITY...
-          </pre>
-          <div class="mt-8 space-y-4">
-            <div class="h-1 w-full bg-white/5"><div class="h-1 w-2/3 bg-[#ff2e63]"></div></div>
-            <div class="h-1 w-full bg-white/5"><div class="h-1 w-1/2 bg-[#08d9d6]"></div></div>
+          
+          <div class="flex justify-between items-center mb-6 pb-4 border-b border-white/5">
+            <div class="flex gap-1.5">
+              <div class="w-2.5 h-2.5 rounded-full bg-red-500/60"></div>
+              <div class="w-2.5 h-2.5 rounded-full bg-yellow-500/60"></div>
+              <div class="w-2.5 h-2.5 rounded-full bg-green-500/60"></div>
+            </div>
+            <div class="mono text-[10px] text-gray-700">GURU_CORE_MONITOR::active</div>
           </div>
+          
+          <pre class="mono text-[11px] text-[#ff2e63]/80 leading-relaxed whitespace-pre-wrap">
+<span class="text-gray-600">[14:02:88]</span> > INT_CHECK... <span class="text-green-400">OK</span>
+<span class="text-gray-600">[14:02:89]</span> > HYBRID_SOCKET_INIT... <span class="text-green-400">OK</span>
+<span class="text-gray-600">[14:02:90]</span> > LAYER_7_ENC... <span class="text-[#08d9d6]">ACTIVE [AES-GCM]</span>
+<span class="text-gray-600">[14:02:91]</span> > NEXUS_BRIDGE... <span class="text-green-400">STABLE</span>
+<span class="text-gray-600">[14:02:92]</span> > AWAITING_HOST_IDENTITY...<span class="console-loader"></span>
+          </pre>
+          
+          <div class="mt-10 flex gap-2 items-center">
+            <div class="h-1.5 flex-grow bg-white/5 rounded-full overflow-hidden">
+                <div class="h-full w-2/3 bg-gradient-to-r from-[#ff2e63] to-[#08d9d6]"></div>
+            </div>
+            <span class="mono text-[10px] text-gray-600">66%</span>
+          </div>
+        </div>
+        
+        <div class="absolute -bottom-6 -right-6 mono text-[9px] bg-[#08d9d6]/10 text-[#08d9d6] p-2 border border-[#08d9d6]/20 rotate-[-5deg]">
+          #DATA_STREAM_A
         </div>
       </div>
     </div>
   </main>
 
-  <section class="py-24 px-6 border-y border-white/5">
-    <div class="max-w-7xl mx-auto">
-      <div class="grid md:grid-cols-3 gap-1">
-        <div class="glass-card p-10">
-          <span class="mono text-[#ff2e63] text-sm">01.</span>
-          <h3 class="text-2xl font-bold mt-4 mb-4">Neural Pairing</h3>
-          <p class="text-gray-500 text-sm leading-relaxed">Direct 8-digit authorization bypasses physical hardware requirements with zero latency.</p>
+  <section class="py-32 px-6 border-y border-white/5 relative">
+    <div class="absolute inset-0 bg-[#07070a]"></div>
+    <div class="max-w-7xl mx-auto relative z-10">
+        
+        <div class="mb-16 text-center max-w-xl mx-auto">
+            <div class="inline-block mono text-[11px] text-[#08d9d6] tracking-widest uppercase mb-3">SYSTEM_ADVANTAGES</div>
+            <h2 class="text-5xl font-extrabold tracking-tighter text-white">Advanced Bridging</h2>
         </div>
-        <div class="glass-card p-10 border-x-0 md:border-x">
-          <span class="mono text-[#08d9d6] text-sm">02.</span>
-          <h3 class="text-2xl font-bold mt-4 mb-4">Visual Sync</h3>
-          <p class="text-gray-500 text-sm leading-relaxed">Instant QR matrix generation for legacy device authentication via secure optical scan.</p>
+
+      <div class="grid md:grid-cols-3 gap-6">
+        
+        <div class="glass-card feature-card p-12 hover:z-10 group" style="--card-accent: var(--accent-primary);">
+          <div class="corner-acc tl"></div><div class="corner-acc br"></div>
+          
+          <div class="w-14 h-14 bg-[#ff2e63]/8 border border-[#ff2e63]/15 flex items-center justify-center mb-10 transition-transform group-hover:scale-110">
+            <i class="fas fa-brain text-2xl text-[#ff2e63]"></i>
+          </div>
+          <span class="mono text-[#ff2e63] text-xs font-bold tracking-widest uppercase">Protocol 01.</span>
+          <h3 class="text-3xl font-bold mt-4 mb-5 text-white tracking-tight">Neural Pairing</h3>
+          <p class="text-gray-500 text-base leading-relaxed">Direct 8-digit algorithmic handshake. Bypass hardware barriers with ultra-low latency response times.</p>
+          <div class="mt-8 pt-6 border-t border-white/5 flex items-center text-xs mono text-gray-700">
+            <i class="fas fa-bolt mr-2 text-[#ff2e63]"></i> LATENCY: < 1ms
+          </div>
         </div>
-        <div class="glass-card p-10">
-          <span class="mono text-white text-sm">03.</span>
-          <h3 class="text-2xl font-bold mt-4 mb-4">Void Security</h3>
-          <p class="text-gray-500 text-sm leading-relaxed">End-to-end volatile memory processing ensures your credentials never touch a disk.</p>
+        
+        <div class="glass-card feature-card p-12 border-white/5 group" style="--card-accent: var(--accent-secondary);">
+          <div class="corner-acc tl"></div><div class="corner-acc br"></div>
+          
+          <div class="w-14 h-14 bg-[#08d9d6]/8 border border-[#08d9d6]/15 flex items-center justify-center mb-10 transition-transform group-hover:scale-110">
+            <i class="fas fa-eye text-2xl text-[#08d9d6]"></i>
+          </div>
+          <span class="mono text-[#08d9d6] text-xs font-bold tracking-widest uppercase">Protocol 02.</span>
+          <h3 class="text-3xl font-bold mt-4 mb-5 text-white tracking-tight">Visual Sync</h3>
+          <p class="text-gray-500 text-base leading-relaxed">High-density QR matrix generation. Seamless authentication for legacy systems via optical data transfer.</p>
+          <div class="mt-8 pt-6 border-t border-white/5 flex items-center text-xs mono text-gray-700">
+            <i class="fas fa-expand mr-2 text-[#08d9d6]"></i> RELIABILITY: 99.99%
+          </div>
         </div>
+        
+        <div class="glass-card feature-card p-12 border-white/5 group" style="--card-accent: #fff;">
+          <div class="corner-acc tl"></div><div class="corner-acc br"></div>
+          
+          <div class="w-14 h-14 bg-white/5 border border-white/10 flex items-center justify-center mb-10 transition-transform group-hover:scale-110">
+            <i class="fas fa-user-secret text-2xl text-white"></i>
+          </div>
+          <span class="mono text-white text-xs font-bold tracking-widest uppercase">Protocol 03.</span>
+          <h3 class="text-3xl font-bold mt-4 mb-5 text-white tracking-tight">Ghost State</h3>
+          <p class="text-gray-500 text-base leading-relaxed">Zero-footprint session handling. Credentials exist purely in volatile memory; wiped instantly post-auth.</p>
+          <div class="mt-8 pt-6 border-t border-white/5 flex items-center text-xs mono text-gray-700">
+            <i class="fas fa-shield-alt mr-2 text-white"></i> AUDIT_TRAIL: NONE
+          </div>
+        </div>
+        
       </div>
     </div>
   </section>
 
-  <footer class="py-12 px-6">
-    <div class="max-w-7xl mx-auto flex flex-col md:row justify-between items-center gap-8">
-      <p class="mono text-[10px] text-gray-600 tracking-widest uppercase">
-        © 2026 // GURU_TECH_LABS // ALL_RIGHTS_RESERVED
+  <footer class="py-20 px-6 bg-[#030305]">
+    <div class="max-w-7xl mx-auto grid md:grid-cols-4 gap-12 text-center md:text-left">
+        <div class="md:col-span-2">
+            <div class="flex items-center gap-3 mb-4 justify-center md:justify-start">
+                <div class="w-7 h-7 border border-[#ff2e63]/30 rotate-45 flex items-center justify-center">
+                  <span class="rotate-[-45deg] font-bold text-white text-xs">U</span>
+                </div>
+                <span class="text-lg font-bold tracking-tighter mono text-white">ULTRA<span class="text-[#ff2e63]">GURU</span> Nexus</span>
+            </div>
+            <p class="text-gray-600 text-sm max-w-sm mx-auto md:mx-0">Advanced Session Management Interface. Deploying logical bridges across the digital void.</p>
+        </div>
+        
+        <div class="mono text-xs text-gray-700 uppercase tracking-wider space-y-3">
+            <div class="text-gray-500 mb-4 font-bold">SYSTEM_LINKS</div>
+            <a href="#" class="block hover:text-[#ff2e63]">Status_Monitor</a>
+            <a href="#" class="block hover:text-[#ff2e63]">Nexus_API</a>
+            <a href="#" class="block hover:text-[#ff2e63]">Security_Logs</a>
+        </div>
+
+        <div class="mono text-xs text-gray-700 uppercase tracking-wider space-y-3">
+            <div class="text-gray-500 mb-4 font-bold">DEVELOPER_HUB</div>
+            <a href="#" class="block hover:text-[#ff2e63]">Github_Repo</a>
+            <a href="#" class="block hover:text-[#ff2e63]">Documentation</a>
+            <a href="#" class="block hover:text-[#ff2e63]">Report_Bug</a>
+        </div>
+    </div>
+    
+    <div class="max-w-7xl mx-auto mt-16 pt-10 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6">
+      <p class="mono text-[10px] text-gray-700 tracking-widest uppercase">
+        © 2026 // GURU_TECH_LABS // AUTHENTICATION_INTERFACE_vNexus
       </p>
-      <div class="flex gap-8">
-        <a href="#" class="text-white hover:text-[#ff2e63] transition-colors"><i class="fab fa-github"></i></a>
-        <a href="#" class="text-white hover:text-[#ff2e63] transition-colors"><i class="fab fa-discord"></i></a>
-        <a href="#" class="text-white hover:text-[#ff2e63] transition-colors"><i class="fas fa-code-branch"></i></a>
+      <div class="flex gap-6 text-gray-600">
+        <a href="#" class="hover:text-[#ff2e63] transition-colors"><i class="fab fa-github text-lg"></i></a>
+        <a href="#" class="hover:text-[#ff2e63] transition-colors"><i class="fab fa-discord text-lg"></i></a>
+        <a href="#" class="hover:text-[#ff2e63] transition-colors"><i class="fas fa-terminal text-lg"></i></a>
       </div>
     </div>
   </footer>
 
   <script>
+    // --- Card Glow Effect ---
+    document.querySelectorAll('.glass-card').forEach(card => {
+      card.addEventListener('mousemove', e => {
+        const rect = card.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        card.style.setProperty('--mouse-x', `${x}px`);
+        card.style.setProperty('--mouse-y', `${y}px`);
+      });
+    });
+
     // Note: Built for the Ultra Guru Project by GuruTech.
   </script>
 </body>
