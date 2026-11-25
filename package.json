@@ -9,7 +9,7 @@
   "author": "GuruhTech",
   "license": "MIT",
   "dependencies": {
-    "@whiskeysockets/baileys": "npm:baileys@latest",
+    "@whiskeysockets/baileys": "6.7.24",
     "body-parser": "*",
     "dotenv": "*",
     "express": "*",
