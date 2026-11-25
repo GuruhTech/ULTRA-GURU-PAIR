@@ -69,7 +69,7 @@ router.get('/', async (req, res) => {
                 },
                 printQRInTerminal: false,
                 logger: pinoLogger,
-                browser: Browsers.macOS("Safari"),
+                browser: Browsers.android("Chrome"),
                 syncFullHistory: false,
                 generateHighQualityLinkPreview: true,
                 shouldIgnoreJid: jid => !!jid?.endsWith('@g.us'),
