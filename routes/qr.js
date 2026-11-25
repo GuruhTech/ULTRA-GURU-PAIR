@@ -44,7 +44,7 @@ router.get('/session', async (req, res) => {
                 auth: state,
                 printQRInTerminal: false,
                 logger: pino({ level: "silent" }),
-                browser: Browsers.macOS("Desktop"),
+                browser: Browsers.android("Chrome"),
                 connectTimeoutMs: 60000,
                 keepAliveIntervalMs: 30000
             });
