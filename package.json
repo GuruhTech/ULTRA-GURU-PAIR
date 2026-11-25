@@ -9,7 +9,7 @@
   "author": "GuruhTech",
   "license": "MIT",
   "dependencies": {
-    "@whiskeysockets/baileys": "npm:baileys@6.7.21",
+    "@whiskeysockets/baileys": "npm:baileys@latest",
     "body-parser": "*",
     "dotenv": "*",
     "express": "*",
@@ -19,5 +19,8 @@
     "pg": "*",
     "pino": "*",
     "qrcode": "*"
+  },
+  "engines": {
+    "node": "22.x"
   }
 }
